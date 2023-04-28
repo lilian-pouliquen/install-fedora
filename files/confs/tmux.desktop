@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1
+Name=tmux
+Exec=tmux
+Icon=tmux
+Terminal=true
+Type=Application
+StartupNotify=true
+Categories=CLI;

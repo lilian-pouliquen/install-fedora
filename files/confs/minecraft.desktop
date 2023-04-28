@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1
+Name=Minecraft
+Exec=sh -c "$HOME/Games/minecraft-launcher/minecraft-launcher"
+Icon=minecraft
+Terminal=false
+Type=Application
+StartupNotify=true
+PrefersNonDefaultGPU=true
+Categories=Game;
