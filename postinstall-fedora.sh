@@ -95,7 +95,7 @@ systemInstall() {
     sudo cp ./files/confs/fedora.xml /usr/share/gnome-background-properties/fedora.xml
 }
 
-devInstall () {
+devInstall() {
     ## Installing Flatpak development apps for user
     echo -e "${green}[ INSTALLATION DES APPLICATIONS FLATPAK POUR LE DÉVELOPPEMENT]${reset}"
     flatpak install --user --assumeyes flathub \
@@ -153,24 +153,17 @@ printNextSteps() {
     echo -e "${green}[ ÉTAPES SUIVANTES ]${reset}"
     echo ""
     echo "    Les étapes qui suivent sont à faire manuellement :"
-    if [[ $gaming -eq 0 ]] && [[ $dev -eq 0 ]] && [[ $system -eq 0 ]]; then
+    if [ $gaming -eq 0 ] && [[ $dev -eq 0 ]]; then
         echo "    Rien à faire, l'installation est terminée !"
-        echo "    OPTIONNEL :"
-        echo "      - user.js    : https://github.com/arkenfox/user.js/releases/ "
     else
-        if [[ $system -eq 1 ]]; then
-            echo "    Rien à faire, l'installation est terminée !"
-            echo ""
-        fi
-
-        if [[ $gaming -eq 1 ]]; then
+        if [ $gaming -eq 1 ]; then
             echo "    Installer les jeux :"
             echo "      - FTB App                         : https://feed-the-beast.com/app "
             echo "      - Minecraft Dungeons (Bottles)    : https://launcher.mojang.com/download/MinecraftInstaller.msi "
             echo ""
         fi
 
-        if [[ $dev -eq 1 ]]; then
+        if [ $dev -eq 1 ]; then
             echo "    Ajouter l'utilisateur au groupe docker :"
             echo "      - sudo usermod -aG docker,libvirt $USER"
             echo "    Restaurer :"
@@ -188,9 +181,12 @@ printNextSteps() {
             echo ""
         fi
     fi
+    echo ""
+    echo "    OPTIONNEL :"
+    echo "      - user.js    : https://github.com/arkenfox/user.js/releases/ "
 }
 
-printHelp () {
+printHelp() {
     echo ""
     echo -e "${green}[ UTILISATION ]${reset}"
     echo "    $0 [options]"
@@ -209,7 +205,7 @@ printHelp () {
 ###
 
 # Requirements verifications
-if ! [[ -f $PWD/postinstall-fedora.sh ]]; then
+if ! [ -f $PWD/postinstall-fedora.sh ]; then
     echo -e "${red}Vous devez exécuter ce script depuis le dossier contenant ce dernier.${reset}"
     exit 1
 fi
@@ -221,52 +217,47 @@ gaming=0
 misc=0
 
 # Arguments handling
-for opt in $@
-do
+for opt in $@; do
     case "$opt" in
-        "--help" )
-            printHelp
-            exit 0
-            ;;
-        "--system" )
-            system=1
-            ;;
-        "--dev" )
-            dev=1
-            ;;
-        "--gaming" )
-            gaming=1
-            ;;
-        "--misc" )
-            misc=1
-            ;;
-        *)
-            echo "Argument invalide : $opt" >&2
-            exit 1
-            ;;
+    "--help")
+        printHelp
+        exit 0
+        ;;
+    "--system")
+        system=1
+        ;;
+    "--dev")
+        dev=1
+        ;;
+    "--gaming")
+        gaming=1
+        ;;
+    "--misc")
+        misc=1
+        ;;
+    *)
+        echo "Argument invalide : $opt" >&2
+        exit 1
+        ;;
     esac
 done
 
 # Default installation
 defaultInstall
 
-if [[ $system -eq 1 ]]
-then
+if [ $system -eq 1 ]; then
     systemInstall
 fi
 
-if [[ $dev -eq 1 ]]
-then
+if [ $dev -eq 1 ]; then
     devInstall
 fi
 
-if [[ $gaming -eq 1 ]]
-then
+if [ $gaming -eq 1 ]; then
     gamingInstall
 fi
 
-if [[ $misc -eq 1 ]]
-then
+if [ $misc -eq 1 ]; then
     miscellaneousInstall
 fi
 
