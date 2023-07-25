@@ -13,11 +13,11 @@ defaultInstall() {
 
     ## Configurations
     echo -e "${green}[ CONFIGURATIONS DIVERSES ]${reset}"
-    mkdir -p $HOME/bin/
+    mkdir --parents $HOME/bin/
     cp ./files/confs/mimeapps.list $HOME/.config/mimeapps.list
 
     ## Preparing apps dir and app icon dirs
-    mkdir -p \
+    mkdir --parents \
         $HOME/applications/ \
         $HOME/.local/share/icons/hicolor/48x48/apps/ \
         $HOME/.local/share/icons/hicolor/scalable/apps/
@@ -58,6 +58,10 @@ systemInstall() {
     sudo cp ./files/scripts/openvm.sh /usr/local/bin/openvm
     sudo chown root:root /usr/local/bin/openvm
     sudo chmod 755 /usr/local/bin/openvm
+    ### Sync Obsidian
+    sudo cp ./files/scripts/sync-obsidian.sh /usr/local/bin/sync-obsidian
+    sudo chown root:root /usr/local/bin/sync-obsidian
+    sudo chmod 755 /usr/local/bin/sync-obsidian
     ### Creating an alias to use vim instead of vi
     sudo cp ./files/scripts/vim.sh /etc/profile.d/vim.sh
     sudo chown root:root /etc/profile.d/vim.sh
@@ -65,10 +69,15 @@ systemInstall() {
     sudo cp ./files/scripts/editor.sh /etc/profile.d/editor.sh
     sudo chown root:root /etc/profile.d/editor.sh
 
+    ## Using custom commands to install apps
+    echo -e "${green}[ INSTALLATION AVEC LES COMMANDES PERSONNALISÉES ]${reset}"
+    ## BTOP++
+    sudo update-btop
+
     ## App icons
     echo -e "${green}[ CRÉATION DES ICONES DE BUREAU ]${reset}"
     ### Creating required directories
-    sudo mkdir -p \
+    sudo mkdir --parents \
         /usr/local/share/icons/hicolor/48x48/apps/ \
         /usr/local/share/icons/hicolor/scalable/apps/ \
         /usr/local/share/applications/
@@ -96,7 +105,7 @@ devInstall () {
 
 gamingInstall() {
     ## Creating user games directory
-    mkdir -p $HOME/Games/
+    mkdir --parents $HOME/Games/
 
     ## Installing Flatpak gaming apps for user
     echo -e "${green}[ INSTALLATION DES APPLICATIONS FLATPAK POUR LES JEUX ]${reset}"
@@ -125,7 +134,7 @@ miscellaneousInstall() {
     ## Installing miscellaneous apps
     ### Ledger live
     echo -e "${green}[ INSTALLATION DE LEDGER-LIVE ]${reset}"
-    mkdir -p $HOME/applications/ledger/
+    mkdir --parents $HOME/applications/ledger/
     wget https://download.live.ledger.com/latest/linux --quiet --output-document=$HOME/applications/ledger/ledger-live
     chmod 755 $HOME/applications/ledger/ledger-live
     wget --quiet --output-document=- https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh | sudo bash
@@ -150,9 +159,7 @@ printNextSteps() {
         echo "      - user.js    : https://github.com/arkenfox/user.js/releases/ "
     else
         if [[ $system -eq 1 ]]; then
-            echo ""
-            echo "    Installer les applications :"
-            echo "      - BTOP++    : sudo update-btop"
+            echo "    Rien à faire, l'installation est terminée !"
             echo ""
         fi
 
