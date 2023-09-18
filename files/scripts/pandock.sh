@@ -53,11 +53,12 @@ docker run -it --rm -v $PWD/:/data/ docker.home-pouliquen.local/pandoc:3.1.1-alp
     -s \
     -V mainfont="Liberation Sans" \
     -V monofont="Liberation Mono" \
+    -V linkcolor=blue \
     -V titlepage=true \
     -V titlepage-rule-color="000080" \
+    -V colorlinks=true \
     -V toc-title="Table des matières" \
     -V toc-own-page=true \
-    -V listings-no-page-break=true \
     --template=eisvogel \
     --pdf-engine=xelatex \
     --toc \
