@@ -58,6 +58,10 @@ systemInstall() {
     sudo cp ./files/scripts/openvm.sh /usr/local/bin/openvm
     sudo chown root:root /usr/local/bin/openvm
     sudo chmod 755 /usr/local/bin/openvm
+    ### Pandock
+    sudo cp ./files/scripts/pandock.sh /usr/local/bin/pandock
+    sudo chown root:root /usr/local/bin/pandock
+    sudo chmod 755 /usr/local/bin/pandock
     ### Sync Obsidian
     sudo cp ./files/scripts/sync-obsidian.sh /usr/local/bin/sync-obsidian
     sudo chown root:root /usr/local/bin/sync-obsidian
