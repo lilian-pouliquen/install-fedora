@@ -6,10 +6,12 @@ reset="\e[0m"
 
 printHelp() {
     echo "UTILISATION"
-    echo "  $0 <input-file> <output-file>"
+    echo "  $0 [<option>]... <input-file> <output-file>"
     echo ""
     echo "OPTIONS"
-    echo "    -h, --help    : Affiche l'aide de la commande"
+    echo "    -h, --help                  : Affiche l'aide de la commande"
+    echo ""
+    echo "    -d, --directory <chemin>    : Exécute la commande dans le dossier dont le chemin est <chemin>"
     echo ""
 }
 
@@ -17,39 +19,74 @@ printHelp() {
 ### BEGIN
 ###
 
-if [ $# -eq 1 ] && ([ $1 = "--help" ] || [ $1 = "-h" ])
-then
-    printHelp
-    exit 0
-fi
+# Default values
+directory=$PWD
 
-if [ $# -ne 2 ]
+# Parse options
+while :
+do
+    case $1 in
+        -h|--help|-\?)
+            printHelp
+            exit 0
+            ;;
+        -d|--directory)
+            # Assign value to directory if value is given
+            if [ "$2" ]; then
+                directory=$2
+                shift
+            else
+                echo -e "${red}--file requiert un argument non vide.${reset}" >&2
+            fi
+            ;;
+        --directory=?*)
+            # Delete everything up to "=" and assign what remains to directory
+            directory=${1#*=}
+            ;;
+        --directory=)
+            echo -e "${red}--file requiert un argument non vide.${reset}" >&2
+            ;;
+        --)
+            # End of all options
+            shift
+            break
+            ;;
+        -?*)
+            # Unknown option
+            echo -e "${red}Option non prise en charge (ignorée): $1.${reset}" >&2
+            ;;
+        *)
+            # Default case: No more options, so break out of the loop
+            break
+    esac
+    shift
+done
+
+if [ $# -ne 2  ]
 then
-    echo -e "${red}La commande requiert exactement 2 argument : $# trouvé(s)${reset}" >&2
+    echo -e "${red}Mauvais nombre d'arguments : $# trouvé(s), 2 attendus.${reset}" >&2
     printHelp
     exit 1
 fi
-
-for arg in "$@"
-do
-    if [ $arg = "--help" ] || [ $arg = "-h" ]
-    then
-        printHelp
-        exit 0
-    fi
-done
 
 input_file=$1
 output_file=$2
 
-if ! [ -f $PWD/$input_file ]
+if ! [ -d $directory ]
 then
-    echo -e "${red}Le fichier ${input_file} n'existe pas.${reset}" >&2
+    echo -e "${red}$directory n'existe pas.${reset}" >&2
     exit 1
 fi
 
-mkdir --parents $PWD/pdf
-docker run -it --rm -v $PWD/:/data/ docker.home-pouliquen.local/pandoc:3.1.1-alpine \
+directory=$(readlink -f $directory)
+if ! [ -f $directory/$input_file ]
+then
+    echo -e "${red}Le fichier '${input_file}' n'existe pas dans '${directory}'.${reset}" >&2
+    exit 1
+fi
+
+mkdir --parents $directory/pdf
+docker run -it --rm -v $directory/:/data/ docker.home-pouliquen.local/pandoc:3.1.1-alpine \
     -s \
     -V mainfont="Liberation Sans" \
     -V monofont="Liberation Mono" \
