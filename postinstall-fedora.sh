@@ -114,14 +114,13 @@ gamingInstall() {
     ## Installing Flatpak gaming apps for user
     echo -e "${green}[ INSTALLATION DES APPLICATIONS FLATPAK POUR LES JEUX ]${reset}"
     flatpak install --user --assumeyes flathub \
+        com.heroicgameslauncher.hgl \
         com.usebottles.bottles \
         com.valvesoftware.Steam \
         com.valvesoftware.Steam.CompatibilityTool.Proton \
         com.valvesoftware.Steam.CompatibilityTool.Proton-Exp \
         com.valvesoftware.Steam.CompatibilityTool.Proton-GE \
-        io.github.antimicrox.antimicrox \
-        io.github.hmlendea.geforcenow-electron \
-        net.lutris.Lutris
+        io.github.hmlendea.geforcenow-electron
 
     ## Minecraft
     echo -e "${green}[ INSTALLATION DE MINECRAFT ]${reset}"
