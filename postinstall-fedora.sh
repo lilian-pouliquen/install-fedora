@@ -29,8 +29,6 @@ systemInstall() {
     sudo dnf update --assumeyes
     sudo dnf install --assumeyes \
         akmod-nvidia \
-        gnome-shell-extension-gsconnect \
-        nautilus-gsconnect \
         steam-devices
 
     ## Disabling systemd-resolved for OpenVPN to work well with custom DNS
@@ -99,6 +97,20 @@ systemInstall() {
     sudo cp ./files/confs/fedora.xml /usr/share/gnome-background-properties/fedora.xml
 }
 
+miscellaneousInstall() {
+    ## Installing miscellaneous apps
+    ### Ledger live
+    echo -e "${green}[ INSTALLATION DE LEDGER-LIVE ]${reset}"
+    mkdir --parents $HOME/applications/ledger/
+    wget https://download.live.ledger.com/latest/linux --quiet --output-document=$HOME/applications/ledger/ledger-live
+    chmod 755 $HOME/applications/ledger/ledger-live
+    wget --quiet --output-document=- https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh | sudo bash
+
+    cp ./files/images/ledger_live.png $HOME/.local/share/icons/hicolor/48x48/apps/ledger_live.png
+    cp ./files/images/ledger_live.svg $HOME/.local/share/icons/hicolor/scalable/apps/ledger_live.svg
+    cp ./files/confs/ledger_live.desktop $HOME/.local/share/applications/ledger_live.desktop
+}
+
 devInstall() {
     ## Installing Flatpak development apps for user
     echo -e "${green}[ INSTALLATION DES APPLICATIONS FLATPAK POUR LE DÉVELOPPEMENT]${reset}"
@@ -133,20 +145,6 @@ gamingInstall() {
     cp ./files/confs/minecraft.desktop $HOME/.local/share/applications/minecraft.desktop
 }
 
-miscellaneousInstall() {
-    ## Installing miscellaneous apps
-    ### Ledger live
-    echo -e "${green}[ INSTALLATION DE LEDGER-LIVE ]${reset}"
-    mkdir --parents $HOME/applications/ledger/
-    wget https://download.live.ledger.com/latest/linux --quiet --output-document=$HOME/applications/ledger/ledger-live
-    chmod 755 $HOME/applications/ledger/ledger-live
-    wget --quiet --output-document=- https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh | sudo bash
-
-    cp ./files/images/ledger_live.png $HOME/.local/share/icons/hicolor/48x48/apps/ledger_live.png
-    cp ./files/images/ledger_live.svg $HOME/.local/share/icons/hicolor/scalable/apps/ledger_live.svg
-    cp ./files/confs/ledger_live.desktop $HOME/.local/share/applications/ledger_live.desktop
-}
-
 printNextSteps() {
     local system=$1
     local dev=$2
@@ -161,14 +159,16 @@ printNextSteps() {
     else
         if [ $gaming -eq 1 ]; then
             echo "    Installer les jeux :"
-            echo "      - FTB App                         : https://feed-the-beast.com/app "
-            echo "      - Minecraft Dungeons (Bottles)    : https://launcher.mojang.com/download/MinecraftInstaller.msi "
+            echo "      - FTB App                         : https://feed-the-beast.com/app"
+            echo "      - Minecraft Dungeons (Bottles)    : https://launcher.mojang.com/download/MinecraftInstaller.msi"
+            echo "      - Genshin Impact (Bottles)        : https://ys-api-os.mihoyo.com/event/download_porter/link/ys_global/genshinimpactpc/default"
             echo ""
         fi
 
         if [ $dev -eq 1 ]; then
             echo "    Ajouter l'utilisateur au groupe docker :"
             echo "      - sudo usermod -aG docker,libvirt $USER"
+            echo ""
             echo "    Restaurer :"
             echo "      - Clefs SSH"
             echo "      - Clef GPG"
@@ -196,10 +196,10 @@ printHelp() {
     echo ""
     echo -e "${green}[ OPTIONS DISPONIBLES ]${reset}"
     echo "    --help         : Affiche la documentation de la commande."
-    echo "    --dev          : Prépare le compte pour le développement."
     echo "    --system       : Met à jour et installe des paquets avec dnf et configure le système. (requiert les privilèges d'administrateur)"
-    echo "    --gaming       : Prépare le compte pour jouer aux jeux vidéos."
     echo "    --misc         : Installe Ledger live. (requiert les privilèges d'administrateur)"
+    echo "    --dev          : Prépare le compte pour le développement."
+    echo "    --gaming       : Prépare le compte pour jouer aux jeux vidéos."
     echo ""
 }
 
@@ -252,16 +252,16 @@ if [ $system -eq 1 ]; then
     systemInstall
 fi
 
+if [ $misc -eq 1 ]; then
+    miscellaneousInstall
+fi
+
 if [ $dev -eq 1 ]; then
     devInstall
 fi
 
 if [ $gaming -eq 1 ]; then
     gamingInstall
-fi
-
-if [ $misc -eq 1 ]; then
-    miscellaneousInstall
 fi
 
 printNextSteps $system $dev $gaming $misc
