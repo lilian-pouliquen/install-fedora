@@ -2,11 +2,11 @@
 
 ## Table of content <!-- omit in toc -->
 
-- [1. Introduction](#1-introduction)
-- [2. PC specifcations](#2-pc-specifcations)
-- [3. Project structure](#3-project-structure)
-- [4. Files to create](#4-files-to-create)
-- [5. Author](#5-author)
+* [1. Introduction](#1-introduction)
+* [2. PC specifcations](#2-pc-specifcations)
+* [3. Project structure](#3-project-structure)
+* [4. Files to create](#4-files-to-create)
+* [5. Author](#5-author)
 
 ## 1. Introduction
 
@@ -18,12 +18,12 @@ Install Fedora is a set of scripts and files to automate the installation of a F
 
 The project is used on my laptop. Here are its specifications:
 
-- CPU: Intel® Core™ i7-10750H × 12
-- GPU: NVIDIA GeForce GTX 1650 / Intel® UHD Graphics (CML GT2)
-- RAM: 32,0 Gio
-- ROM:
-  - System: Samsung SSD 970 EVO Plus 250GB
-  - Data: Seagate BarraCuda HDD 7200 RPM 1TB
+* CPU: Intel® Core™ i7-10750H × 12
+* GPU: NVIDIA GeForce GTX 1650 / Intel® UHD Graphics (CML GT2)
+* RAM: 32,0 Gio
+* ROM:
+  * System: Samsung SSD 970 EVO Plus 250GB
+  * Data: Seagate BarraCuda HDD 7200 RPM 1TB
 
 ## 3. Project structure
 
@@ -37,6 +37,7 @@ install-fedora/
 |
 +-- .gitignore               => Files ignored from Git
 +-- fedora.dist.cfg          => Fedora workstation kickstart
++-- LICENCE                  => MIT licence
 +-- postinstall-fedora.sh    => Post installation script to prepare a user account after first login
 +-- README.md                => Project introduction
 ```
@@ -45,16 +46,16 @@ install-fedora/
 
 The project is not working as is. In order to use it, you must copy, fill and adapt the following files:
 
-- fedora.dist.cfg => fedora.cfg
+* fedora.dist.cfg => fedora.cfg
 
 Make sure to replace the following strings in `fedora.cfg`:
 
-- ENCRYPTED_MAIN_USER_PASSWORD
-- ENCRYPTED_ROOT_PASSWORD
-- HOSTNAME
-- MAIN_USER_DISPLAY_NAME
-- MAIN_USER_LOGIN
+* ENCRYPTED_MAIN_USER_PASSWORD
+* ENCRYPTED_ROOT_PASSWORD
+* HOSTNAME
+* MAIN_USER_DISPLAY_NAME
+* MAIN_USER_LOGIN
 
 ## 5. Author
 
-- Lilian POULIQUEN: [Github - @lilian-pouliquen](https://github.com/lilian-pouliquen)
+* Lilian POULIQUEN: [Github – @lilian-pouliquen](https://github.com/lilian-pouliquen)
