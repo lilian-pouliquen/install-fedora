@@ -20,6 +20,7 @@ defaultInstall() {
     mkdir --parents \
         $HOME/applications/ \
         $HOME/.local/share/icons/hicolor/48x48/apps/ \
+        $HOME/.local/share/icons/hicolor/128x128/apps/ \
         $HOME/.local/share/icons/hicolor/scalable/apps/
 }
 
@@ -115,8 +116,20 @@ devInstall() {
     ## Installing Flatpak development apps for user
     echo -e "${green}[ INSTALLATION DES APPLICATIONS FLATPAK POUR LE DÉVELOPPEMENT]${reset}"
     flatpak install --user --assumeyes flathub \
-        com.vscodium.codium \
-        com.jetbrains.WebStorm
+        com.vscodium.codium
+
+    ## Installing Webstorm
+    unset webstorm_folder_name
+    mkdir --parents $HOME/applications/webstorm/
+    wget https://download.jetbrains.com/webstorm/WebStorm-2023.3.2.tar.gz --output-document=/tmp/webstorm.tar.gz
+    webstorm_folder_name=$(tar --exclude='*/*' --list --file /tmp/webstorm.tar.gz | uniq)
+    tar --directory=$HOME/applications/ --extract --overwrite --file=/tmp/webstorm.tar.gz
+    mv $HOME/applications/$webstorm_folder_name $HOME/applications/webstorm/
+
+    ## Adding Webstorm desktop icon
+    cp ./$HOME/applications/webstorm/bin/webstorm.png $HOME/.local/share/icons/hicolor/128x128/apps/webstorm.png
+    cp ./$HOME/applications/webstorm/bin/webstorm.svg $HOME/.local/share/icons/hicolor/scalable/apps/webstorm.svg
+    cp ./files/confs/webstorm.desktop $HOME/.local/share/applications/webstorm.desktop
 }
 
 gamingInstall() {
@@ -129,9 +142,6 @@ gamingInstall() {
         com.heroicgameslauncher.hgl \
         com.usebottles.bottles \
         com.valvesoftware.Steam \
-        com.valvesoftware.Steam.CompatibilityTool.Proton \
-        com.valvesoftware.Steam.CompatibilityTool.Proton-Exp \
-        com.valvesoftware.Steam.CompatibilityTool.Proton-GE \
         io.github.hmlendea.geforcenow-electron
 
     ## Minecraft

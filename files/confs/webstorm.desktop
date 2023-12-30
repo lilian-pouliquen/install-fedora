@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1
+Type=Application
+Name=WebStorm
+Icon=webstorm
+Exec=sh -c "$HOME/applications/WebStorm/bin/webstorm.sh" %f
+Comment=The smartest JavaScript IDE
+Categories=Development;IDE;
+Terminal=false
+StartupWMClass=webstorm
+StartupNotify=true
