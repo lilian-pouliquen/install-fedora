@@ -25,18 +25,29 @@ defaultInstall() {
 }
 
 systemInstall() {
-    ## Updating dependencies
-    echo -e "${green}[ MISES À JOUR ]${reset}"
-    sudo dnf update --assumeyes
+    ## Installing last driver packages
+    echo -e "${green}[ INSTALLATION DES DERNIERS PILOTES ]${reset}"
     sudo dnf install --assumeyes \
         akmod-nvidia \
         steam-devices
 
+    ## Keeping only Flathub flatpak remote
+    unset flatpak_remotes
+    flatpak_remotes=$(flatpak remote-list --show-disabled)
+    for remote in ${flatpak_remotes[@]}; do
+        if [ $remote != 'user' -a $remote != 'system' -a $remote != 'flathub' ]; then
+            sudo flatpak remote-delete $remote
+        fi
+    done
+
     ## Disabling systemd-resolved for OpenVPN to work well with custom DNS
     sudo systemctl disable --now systemd-resolved
     sudo rm /etc/resolv.conf
-    sudo cp ./files/confs/dns.conf /etc/NetworkManager/conf.d/dns.conf
     sudo systemctl restart NetworkManager
+
+    ## Creating Docker certificate directory
+    echo -e "${green}[ CRÉATION DU RÉPERTOIRE DE CERTIFICATS SSL DOCKER ]${reset}"
+    sudo mkdir --parrents $HOME/etc/docker/certs.d/
 
     ## Installing SSH autocompletion
     sudo cp ./files/confs/ssh_completion /etc/bash_completion.d/ssh
@@ -113,22 +124,25 @@ miscellaneousInstall() {
 }
 
 devInstall() {
+    ## Creating git directories
+    echo -e "${green}[ CRÉATION DES RÉPERTOIRES GIT ]${reset}"
+    mkdir --parrents $HOME/git/ $HOME/.git-certs/
+
     ## Installing Flatpak development apps for user
-    echo -e "${green}[ INSTALLATION DES APPLICATIONS FLATPAK POUR LE DÉVELOPPEMENT]${reset}"
+    echo -e "${green}[ INSTALLATION DES APPLICATIONS FLATPAK POUR LE DÉVELOPPEMENT ]${reset}"
     flatpak install --user --assumeyes flathub \
         com.vscodium.codium
 
     ## Installing Webstorm
     unset webstorm_folder_name
-    mkdir --parents $HOME/applications/webstorm/
     wget https://download.jetbrains.com/webstorm/WebStorm-2023.3.2.tar.gz --output-document=/tmp/webstorm.tar.gz
     webstorm_folder_name=$(tar --exclude='*/*' --list --file /tmp/webstorm.tar.gz | uniq)
     tar --directory=$HOME/applications/ --extract --overwrite --file=/tmp/webstorm.tar.gz
     mv $HOME/applications/$webstorm_folder_name $HOME/applications/webstorm/
 
     ## Adding Webstorm desktop icon
-    cp ./$HOME/applications/webstorm/bin/webstorm.png $HOME/.local/share/icons/hicolor/128x128/apps/webstorm.png
-    cp ./$HOME/applications/webstorm/bin/webstorm.svg $HOME/.local/share/icons/hicolor/scalable/apps/webstorm.svg
+    cp $HOME/applications/webstorm/bin/webstorm.png $HOME/.local/share/icons/hicolor/128x128/apps/webstorm.png
+    cp $HOME/applications/webstorm/bin/webstorm.svg $HOME/.local/share/icons/hicolor/scalable/apps/webstorm.svg
     cp ./files/confs/webstorm.desktop $HOME/.local/share/applications/webstorm.desktop
 }
 
@@ -164,36 +178,39 @@ printNextSteps() {
     echo -e "${green}[ ÉTAPES SUIVANTES ]${reset}"
     echo ""
     echo "    Les étapes qui suivent sont à faire manuellement :"
-    if [ $gaming -eq 0 ] && [[ $dev -eq 0 ]]; then
-        echo "    Rien à faire, l'installation est terminée !"
-    else
-        if [ $gaming -eq 1 ]; then
-            echo "    Installer les jeux :"
-            echo "      - FTB App                         : https://feed-the-beast.com/app"
-            echo "      - Minecraft Dungeons (Bottles)    : https://launcher.mojang.com/download/MinecraftInstaller.msi"
-            echo "      - Genshin Impact (Bottles)        : https://ys-api-os.mihoyo.com/event/download_porter/link/ys_global/genshinimpactpc/default"
-            echo ""
-        fi
+    echo "    Si une carte Nvidia est utilisée :"
+    echo "      - reboot"
+    echo "      - flatpak update --assumeyes"
 
-        if [ $dev -eq 1 ]; then
-            echo "    Ajouter l'utilisateur au groupe docker :"
-            echo "      - sudo usermod -aG docker,libvirt $USER"
-            echo ""
-            echo "    Restaurer :"
-            echo "      - Clefs SSH"
-            echo "      - Clef GPG"
-            echo "      - Certificats VPN"
-            echo ""
-            echo "    Configuration de Git :"
-            echo "      - git config --global commit.gpgSign true"
-            echo "      - git config --global init.defaultBranch master"
-            echo "      - git config --global tag.gpgSign true"
-            echo "      - git config --global user.email <email>"
-            echo "      - git config --global user.name <name>"
-            echo "      - git config --global user.signingKey <gpg-key-id>"
-            echo ""
-        fi
+    if [ $gaming -eq 1 ]; then
+        echo "    Installer les jeux :"
+        echo "      - FTB App                         : https://feed-the-beast.com/app"
+        echo "      - Minecraft Dungeons (Bottles)    : https://launcher.mojang.com/download/MinecraftInstaller.msi"
+        echo "      - Genshin Impact (Bottles)        : https://ys-api-os.mihoyo.com/event/download_porter/link/ys_global/genshinimpactpc/default"
+        echo ""
     fi
+
+    if [ $dev -eq 1 ]; then
+        echo "    Ajouter l'utilisateur au groupe docker :"
+        echo "      - sudo usermod -aG docker,libvirt $USER"
+        echo ""
+        echo "    Restaurer :"
+        echo "      - Clefs SSH"
+        echo "      - Clef GPG"
+        echo "      - Certificats VPN"
+        echo "      - Certificats SSL privés"
+        echo ""
+        echo "    Configuration de Git :"
+        echo "      - git config --global commit.gpgSign true"
+        echo "      - git config --global init.defaultBranch master"
+        echo "      - git config --global tag.gpgSign true"
+        echo "      - git config --global user.email <email>"
+        echo "      - git config --global user.name <name>"
+        echo "      - git config --global user.signingKey <gpg-key-id>"
+        echo "      - git config --global http.sslCAInfo $HOME/.git-certs/<certificats>"
+        echo ""
+    fi
+
     echo ""
     echo "    OPTIONNEL :"
     echo "      - user.js    : https://github.com/arkenfox/user.js/releases/ "
@@ -210,6 +227,7 @@ printHelp() {
     echo "    --misc         : Installe Ledger live. (requiert les privilèges d'administrateur)"
     echo "    --dev          : Prépare le compte pour le développement."
     echo "    --gaming       : Prépare le compte pour jouer aux jeux vidéos."
+    echo "    --all          : Équivaut à --system --misc --dev --gaming"
     echo ""
 }
 
@@ -235,6 +253,12 @@ for opt in $@; do
     "--help")
         printHelp
         exit 0
+        ;;
+    "--all")
+        system=1
+        dev=1
+        gaming=1
+        misc=1
         ;;
     "--system")
         system=1
