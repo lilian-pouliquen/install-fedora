@@ -19,8 +19,8 @@ defaultInstall() {
     ## Preparing apps dir and app icon dirs
     mkdir --parents \
         $HOME/applications/ \
-        $HOME/.local/share/icons/hicolor/48x48/apps/ \
         $HOME/.local/share/icons/hicolor/128x128/apps/ \
+        $HOME/.local/share/icons/hicolor/512x512/apps/ \
         $HOME/.local/share/icons/hicolor/scalable/apps/
 }
 
@@ -92,21 +92,25 @@ systemInstall() {
     echo -e "${green}[ CRÉATION DES ICONES DE BUREAU ]${reset}"
     ### Creating required directories
     sudo mkdir --parents \
-        /usr/local/share/icons/hicolor/48x48/apps/ \
+        /usr/local/share/icons/hicolor/512x512/apps/ \
         /usr/local/share/icons/hicolor/scalable/apps/ \
         /usr/local/share/applications/
     ### tmux
-    sudo cp ./files/images/tmux.png /usr/local/share/icons/hicolor/48x48/apps/tmux.png
-    sudo cp ./files/images/tmux.svg /usr/local/share/icons/hicolor/scalable/apps/tmux.svg
-    sudo cp ./files/confs/tmux.desktop /usr/local/share/applications/tmux.desktop
+    sudo cp ./files/usr/local/share/icons/hicolor/512x512/apps/tmux.png /usr/local/share/icons/hicolor/512x512/apps/tmux.png
+    sudo cp ./files/usr/local/share/icons/hicolor/scalable/apps/tmux.svg /usr/local/share/icons/hicolor/scalable/apps/tmux.svg
+    sudo cp ./files/usr/local/share/applications/tmux.desktop /usr/local/share/applications/tmux.desktop
 
     ## Backgrounds
     echo -e "${green}[ AJOUT DU SET DE FONDS D'ÉCRANS FEDORA ]${reset}"
+    ### Creating required directories
+    mkdir --parents \
+        /usr/share/backgrounds/custom/f35/
     ### Installing backgrounds
-    sudo cp ./files/images/fedora_l.webp /usr/share/backgrounds/gnome/fedora-l.webp
-    sudo cp ./files/images/fedora_d.webp /usr/share/backgrounds/gnome/fedora-d.webp
-    ### Installing background set definition
-    sudo cp ./files/confs/fedora.xml /usr/share/gnome-background-properties/fedora.xml
+    sudo cp ./files/usr/share/backgrounds/custom/f35/f35-day.png /usr/share/backgrounds/custom/f35/f35-day.png
+    sudo cp ./files/usr/share/backgrounds/custom/f35/f35-night.png /usr/share/backgrounds/custom/f35/f35-night.png
+    ### Installing background set configurations
+    sudo cp ./files/usr/share/gnome-backgound-properties/f35.xml /usr/share/gnome-backgound-properties/f35.xml
+    sudo cp ./files/usr/share/backgounds/custom/f35/f35.xml /usr/share/backgounds/custom/f35/f35.xml
 }
 
 miscellaneousInstall() {
@@ -118,9 +122,9 @@ miscellaneousInstall() {
     chmod 755 $HOME/applications/ledger/ledger-live
     wget --quiet --output-document=- https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh | sudo bash
 
-    cp ./files/images/ledger_live.png $HOME/.local/share/icons/hicolor/48x48/apps/ledger_live.png
-    cp ./files/images/ledger_live.svg $HOME/.local/share/icons/hicolor/scalable/apps/ledger_live.svg
-    cp ./files/confs/ledger_live.desktop $HOME/.local/share/applications/ledger_live.desktop
+    cp ./files/.local/share/icons/hicolor/512x512/ledger_live.png $HOME/.local/share/icons/hicolor/512x512/apps/ledger_live.png
+    cp ./files/.local/share/icons/hicolor/scalable/ledger_live.svg $HOME/.local/share/icons/hicolor/scalable/apps/ledger_live.svg
+    cp ./files/.local/share/applications/ledger_live.desktop $HOME/.local/share/applications/ledger_live.desktop
 }
 
 devInstall() {
@@ -143,7 +147,7 @@ devInstall() {
     ## Adding Webstorm desktop icon
     cp $HOME/applications/webstorm/bin/webstorm.png $HOME/.local/share/icons/hicolor/128x128/apps/webstorm.png
     cp $HOME/applications/webstorm/bin/webstorm.svg $HOME/.local/share/icons/hicolor/scalable/apps/webstorm.svg
-    cp ./files/confs/webstorm.desktop $HOME/.local/share/applications/webstorm.desktop
+    cp ./files/.local/share/applications/webstorm.desktop $HOME/.local/share/applications/webstorm.desktop
 }
 
 gamingInstall() {
@@ -164,9 +168,9 @@ gamingInstall() {
     tar --directory $HOME/Games/ -zxf $HOME/Games/minecraft-launcher.tar.gz
     chmod 755 $HOME/Games/minecraft-launcher/minecraft-launcher
     rm $HOME/Games/minecraft-launcher.tar.gz
-    cp ./files/images/minecraft.png $HOME/.local/share/icons/hicolor/48x48/apps/minecraft.png
-    cp ./files/images/minecraft.svg $HOME/.local/share/icons/hicolor/scalable/apps/minecraft.svg
-    cp ./files/confs/minecraft.desktop $HOME/.local/share/applications/minecraft.desktop
+    cp ./files/.local/share/icons/hicolor/512x512/apps/minecraft.png $HOME/.local/share/icons/hicolor/512x512/apps/minecraft.png
+    cp ./files/.local/share/icons/hicolor/scalable/apps/minecraft.svg $HOME/.local/share/icons/hicolor/scalable/apps/minecraft.svg
+    cp ./files/.local/share/applications/minecraft.desktop $HOME/.local/share/applications/minecraft.desktop
 }
 
 printNextSteps() {
