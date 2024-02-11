@@ -3,8 +3,8 @@
 <wallpapers>
   <wallpaper deleted="false">
     <name>Fedora</name>
-    <filename>/usr/share/backgrounds/gnome/fedora-l.webp</filename>
-    <filename-dark>/usr/share/backgrounds/gnome/fedora-d.webp</filename-dark>
+    <filename>/usr/share/backgrounds/custom/f35/f35-day.png</filename>
+    <filename-dark>/usr/share/backgrounds/custom/f35/f35-night.png</filename-dark>
     <options>zoom</options>
     <shade_type>solid</shade_type>
     <pcolor>#3465a4</pcolor>

@@ -20,12 +20,12 @@ printHelp() {
 ###
 
 # Default values
-directory=$PWD
+directory="${PWD}"
 
 # Parse options
 while :
 do
-    case $1 in
+    case "$1" in
         -h|--help|-\?)
             printHelp
             exit 0
@@ -72,21 +72,21 @@ fi
 input_file=$1
 output_file=$2
 
-if ! [ -d $directory ]
+if ! [ -d "${directory}" ]
 then
     echo -e "${red}$directory n'existe pas.${reset}" >&2
     exit 1
 fi
 
-directory=$(readlink -f $directory)
-if ! [ -f $directory/$input_file ]
+directory="$(readlink -f "${directory}")"
+if ! [ -f "${directory}/${input_file}" ]
 then
     echo -e "${red}Le fichier '${input_file}' n'existe pas dans '${directory}'.${reset}" >&2
     exit 1
 fi
 
-mkdir --parents $directory/pdf
-docker run -it --rm -v $directory/:/data/ docker.home-pouliquen.local/pandoc:3.1.1-alpine \
+mkdir --parents "${directory}/pdf"
+docker run -it --rm -v "${directory}/:/data/" docker.home-pouliquen.local/pandoc:3.2.1-alpine \
     -s \
     -V mainfont="Liberation Sans" \
     -V monofont="Liberation Mono" \
@@ -100,8 +100,8 @@ docker run -it --rm -v $directory/:/data/ docker.home-pouliquen.local/pandoc:3.1
     --pdf-engine=xelatex \
     --toc \
     --number-sections \
-    $input_file \
-    --output=pdf/$output_file
+    "${input_file}" \
+    --output="pdf/${output_file}"
 
 exit 0
 

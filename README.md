@@ -31,9 +31,6 @@ The project is used on my laptop. Here are its specifications:
 install-fedora/
 |
 +-- files/                   => Files used throughout the post installation process
-|    +-- confs/              => Confs used throughout the post installation process
-|    +-- images/             => Images used throughout the post installation process
-|    +-- scripts/            => Scripts used throughout the post installation process
 |
 +-- .gitignore               => Files ignored from Git
 +-- fedora.dist.cfg          => Fedora workstation kickstart

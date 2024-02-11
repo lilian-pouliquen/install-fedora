@@ -1,27 +1,31 @@
 #!/bin/bash
 set -e
 
-# Variables
+#
+# VARIABLES
+#
 green="\e[0;92m"
 red="\e[0;91m"
 reset="\e[0m"
 
-# Functions
+#
+# FUNCTIONS
+#
 defaultInstall() {
     ## Adding Flathub to user dependencies
-    flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    flatpak remote-add --user --if-not-exists flathub "https://flathub.org/repo/flathub.flatpakrepo"
 
     ## Configurations
     echo -e "${green}[ CONFIGURATIONS DIVERSES ]${reset}"
-    mkdir --parents $HOME/bin/
-    cp ./files/confs/mimeapps.list $HOME/.config/mimeapps.list
+    mkdir --parents "${HOME}/bin/"
+    cp "./files/home/user/.config/mimeapps.list" "${HOME}/.config/mimeapps.list"
 
     ## Preparing apps dir and app icon dirs
     mkdir --parents \
-        $HOME/applications/ \
-        $HOME/.local/share/icons/hicolor/48x48/apps/ \
-        $HOME/.local/share/icons/hicolor/128x128/apps/ \
-        $HOME/.local/share/icons/hicolor/scalable/apps/
+        "${HOME}/applications/" \
+        "${HOME}/.local/share/icons/hicolor/128x128/apps/" \
+        "${HOME}/.local/share/icons/hicolor/512x512/apps/" \
+        "${HOME}/.local/share/icons/hicolor/scalable/apps/"
 }
 
 systemInstall() {
@@ -33,55 +37,49 @@ systemInstall() {
 
     ## Keeping only Flathub flatpak remote
     unset flatpak_remotes
-    flatpak_remotes=$(flatpak remote-list --show-disabled)
-    for remote in ${flatpak_remotes[@]}; do
-        if [ $remote != 'user' -a $remote != 'system' -a $remote != 'flathub' ]; then
-            sudo flatpak remote-delete $remote
+    readarray -t flatpak_remotes <<< "$(flatpak remote-list --show-disabled --columns=name)"
+    for remote_name in "${flatpak_remotes[@]}"; do
+        if [ "${remote_name}" != 'flathub' ]; then
+            sudo flatpak remote-delete "${remote_name}"
         fi
     done
 
     ## Disabling systemd-resolved for OpenVPN to work well with custom DNS
     sudo systemctl disable --now systemd-resolved
-    sudo rm /etc/resolv.conf
+    sudo rm "/etc/resolv.conf"
     sudo systemctl restart NetworkManager
 
     ## Creating Docker certificate directory
     echo -e "${green}[ CRÉATION DU RÉPERTOIRE DE CERTIFICATS SSL DOCKER ]${reset}"
-    sudo mkdir --parrents $HOME/etc/docker/certs.d/
+    sudo mkdir --parents "/etc/docker/certs.d/"
 
     ## Installing SSH autocompletion
-    sudo cp ./files/confs/ssh_completion /etc/bash_completion.d/ssh
-    sudo chown root:root /etc/bash_completion.d/ssh
-    sudo chmod 644 /etc/bash_completion.d/ssh
+    sudo cp "./files/etc/bash_completion.d/ssh_completion" "/etc/bash_completion.d/ssh"
+    sudo chown root:root "/etc/bash_completion.d/ssh"
+    sudo chmod 644 "/etc/bash_completion.d/ssh"
 
     ## Installing custom commands
     echo -e "${green}[ INSTALLATION DES COMMANDES PERSONNALISÉES ]${reset}"
     ### BTOP++ update
-    sudo cp ./files/scripts/update-btop.sh /usr/local/sbin/update-btop
-    sudo chown root:root /usr/local/sbin/update-btop
-    sudo chmod 744 /usr/local/sbin/update-btop
+    sudo cp "./files/usr/local/sbin/update-btop.sh" "/usr/local/sbin/update-btop"
+    sudo chown root:root "/usr/local/sbin/update-btop"
+    sudo chmod 744 "/usr/local/sbin/update-btop"
     ### Docker compose update
-    sudo cp ./files/scripts/update-docker-compose.sh /usr/local/sbin/update-docker-compose
-    sudo chown root:root /usr/local/sbin/update-docker-compose
-    sudo chmod 744 /usr/local/sbin/update-docker-compose
+    sudo cp "./files/usr/local/sbin/update-docker-compose.sh" "/usr/local/sbin/update-docker-compose"
+    sudo chown root:root "/usr/local/sbin/update-docker-compose"
+    sudo chmod 744 "/usr/local/sbin/update-docker-compose"
     ### Open VM
-    sudo cp ./files/scripts/openvm.sh /usr/local/bin/openvm
-    sudo chown root:root /usr/local/bin/openvm
-    sudo chmod 755 /usr/local/bin/openvm
+    sudo cp "./files/usr/local/bin/openvm.sh" "/usr/local/bin/openvm"
+    sudo chown root:root "/usr/local/bin/openvm"
+    sudo chmod 755 "/usr/local/bin/openvm"
     ### Pandock
-    sudo cp ./files/scripts/pandock.sh /usr/local/bin/pandock
-    sudo chown root:root /usr/local/bin/pandock
-    sudo chmod 755 /usr/local/bin/pandock
+    sudo cp "./files/usr/local/bin/pandock.sh" "/usr/local/bin/pandock"
+    sudo chown root:root "/usr/local/bin/pandock"
+    sudo chmod 755 "/usr/local/bin/pandock"
     ### Sync Obsidian
-    sudo cp ./files/scripts/sync-obsidian.sh /usr/local/bin/sync-obsidian
-    sudo chown root:root /usr/local/bin/sync-obsidian
-    sudo chmod 755 /usr/local/bin/sync-obsidian
-    ### Creating an alias to use vim instead of vi
-    sudo cp ./files/scripts/vim.sh /etc/profile.d/vim.sh
-    sudo chown root:root /etc/profile.d/vim.sh
-    ### Setting vim as the default editor
-    sudo cp ./files/scripts/editor.sh /etc/profile.d/editor.sh
-    sudo chown root:root /etc/profile.d/editor.sh
+    sudo cp "./files/usr/local/bin/sync-obsidian.sh" "/usr/local/bin/sync-obsidian"
+    sudo chown root:root "/usr/local/bin/sync-obsidian"
+    sudo chmod 755 "/usr/local/bin/sync-obsidian"
 
     ## Using custom commands to install apps
     echo -e "${green}[ INSTALLATION AVEC LES COMMANDES PERSONNALISÉES ]${reset}"
@@ -92,41 +90,47 @@ systemInstall() {
     echo -e "${green}[ CRÉATION DES ICONES DE BUREAU ]${reset}"
     ### Creating required directories
     sudo mkdir --parents \
-        /usr/local/share/icons/hicolor/48x48/apps/ \
-        /usr/local/share/icons/hicolor/scalable/apps/ \
-        /usr/local/share/applications/
+        "/usr/local/share/icons/hicolor/512x512/apps/" \
+        "/usr/local/share/icons/hicolor/scalable/apps/" \
+        "/usr/local/share/applications/"
     ### tmux
-    sudo cp ./files/images/tmux.png /usr/local/share/icons/hicolor/48x48/apps/tmux.png
-    sudo cp ./files/images/tmux.svg /usr/local/share/icons/hicolor/scalable/apps/tmux.svg
-    sudo cp ./files/confs/tmux.desktop /usr/local/share/applications/tmux.desktop
+    sudo cp "./files/usr/local/share/icons/hicolor/512x512/apps/tmux.png" "/usr/local/share/icons/hicolor/512x512/apps/tmux.png"
+    sudo cp "./files/usr/local/share/icons/hicolor/scalable/apps/tmux.svg" "/usr/local/share/icons/hicolor/scalable/apps/tmux.svg"
+    sudo cp "./files/usr/local/share/applications/tmux.desktop" "/usr/local/share/applications/tmux.desktop"
 
     ## Backgrounds
     echo -e "${green}[ AJOUT DU SET DE FONDS D'ÉCRANS FEDORA ]${reset}"
+    ### Creating required directories
+    sudo mkdir --parents \
+        "/usr/share/backgrounds/custom/f35/"
     ### Installing backgrounds
-    sudo cp ./files/images/fedora_l.webp /usr/share/backgrounds/gnome/fedora-l.webp
-    sudo cp ./files/images/fedora_d.webp /usr/share/backgrounds/gnome/fedora-d.webp
-    ### Installing background set definition
-    sudo cp ./files/confs/fedora.xml /usr/share/gnome-background-properties/fedora.xml
+    sudo cp "./files/usr/share/backgrounds/custom/f35/f35-day.png" "/usr/share/backgrounds/custom/f35/f35-day.png"
+    sudo cp "./files/usr/share/backgrounds/custom/f35/f35-night.png" "/usr/share/backgrounds/custom/f35/f35-night.png"
+    ### Installing background set configurations
+    sudo cp "./files/usr/share/gnome-background-properties/f35.xml" "/usr/share/gnome-background-properties/f35.xml"
+    sudo cp "./files/usr/share/backgrounds/custom/f35/f35.xml" "/usr/share/backgrounds/custom/f35/f35.xml"
 }
 
 miscellaneousInstall() {
     ## Installing miscellaneous apps
     ### Ledger live
     echo -e "${green}[ INSTALLATION DE LEDGER-LIVE ]${reset}"
-    mkdir --parents $HOME/applications/ledger/
-    wget https://download.live.ledger.com/latest/linux --quiet --output-document=$HOME/applications/ledger/ledger-live
-    chmod 755 $HOME/applications/ledger/ledger-live
-    wget --quiet --output-document=- https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh | sudo bash
+    mkdir --parents "${HOME}/applications/ledger/"
+    wget --quiet --output-document "${HOME}/applications/ledger/ledger-live" "https://download.live.ledger.com/latest/linux"
+    chmod 755 "${HOME}/applications/ledger/ledger-live"
+    wget --quiet --output-document - "https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh" | sudo bash
 
-    cp ./files/images/ledger_live.png $HOME/.local/share/icons/hicolor/48x48/apps/ledger_live.png
-    cp ./files/images/ledger_live.svg $HOME/.local/share/icons/hicolor/scalable/apps/ledger_live.svg
-    cp ./files/confs/ledger_live.desktop $HOME/.local/share/applications/ledger_live.desktop
+    cp "./files/home/user/.local/share/icons/hicolor/512x512/apps/ledger_live.png" "${HOME}/.local/share/icons/hicolor/512x512/apps/ledger_live.png"
+    cp "./files/home/user/.local/share/icons/hicolor/scalable/apps/ledger_live.svg" "${HOME}/.local/share/icons/hicolor/scalable/apps/ledger_live.svg"
+    cp "./files/home/user/.local/share/applications/ledger_live.desktop" "${HOME}/.local/share/applications/ledger_live.desktop"
 }
 
 devInstall() {
     ## Creating git directories
     echo -e "${green}[ CRÉATION DES RÉPERTOIRES GIT ]${reset}"
-    mkdir --parrents $HOME/git/ $HOME/.git-certs/
+    mkdir --parents \
+      "${HOME}/git/" \
+      "${HOME}/.git-certs/"
 
     ## Installing Flatpak development apps for user
     echo -e "${green}[ INSTALLATION DES APPLICATIONS FLATPAK POUR LE DÉVELOPPEMENT ]${reset}"
@@ -135,20 +139,24 @@ devInstall() {
 
     ## Installing Webstorm
     unset webstorm_folder_name
-    wget https://download.jetbrains.com/webstorm/WebStorm-2023.3.2.tar.gz --output-document=/tmp/webstorm.tar.gz
-    webstorm_folder_name=$(tar --exclude='*/*' --list --file /tmp/webstorm.tar.gz | uniq)
-    tar --directory=$HOME/applications/ --extract --overwrite --file=/tmp/webstorm.tar.gz
-    mv $HOME/applications/$webstorm_folder_name $HOME/applications/webstorm/
+    wget --quiet --output-document "/tmp/webstorm.tar.gz" "https://download.jetbrains.com/webstorm/WebStorm-2023.3.2.tar.gz"
+    webstorm_folder_name=$(tar --exclude='*/*' --list --file "/tmp/webstorm.tar.gz" | uniq)
+    tar --directory "${HOME}/applications/" --extract --overwrite --file="/tmp/webstorm.tar.gz"
+    mv "${HOME}/applications/${webstorm_folder_name}" "${HOME}/applications/webstorm/"
 
     ## Adding Webstorm desktop icon
-    cp $HOME/applications/webstorm/bin/webstorm.png $HOME/.local/share/icons/hicolor/128x128/apps/webstorm.png
-    cp $HOME/applications/webstorm/bin/webstorm.svg $HOME/.local/share/icons/hicolor/scalable/apps/webstorm.svg
-    cp ./files/confs/webstorm.desktop $HOME/.local/share/applications/webstorm.desktop
+    cp "${HOME}/applications/webstorm/bin/webstorm.png" "${HOME}/.local/share/icons/hicolor/128x128/apps/webstorm.png"
+    cp "${HOME}/applications/webstorm/bin/webstorm.svg" "${HOME}/.local/share/icons/hicolor/scalable/apps/webstorm.svg"
+    cp "./files/home/user/.local/share/applications/webstorm.desktop" "${HOME}/.local/share/applications/webstorm.desktop"
+
+    ## Installing NVChad vor NeoVim
+    git clone "https://github.com/NvChad/starter" "${HOME}/.config/nvim"
+
 }
 
 gamingInstall() {
     ## Creating user games directory
-    mkdir --parents $HOME/Games/
+    mkdir --parents "${HOME}/Games/"
 
     ## Installing Flatpak gaming apps for user
     echo -e "${green}[ INSTALLATION DES APPLICATIONS FLATPAK POUR LES JEUX ]${reset}"
@@ -160,13 +168,13 @@ gamingInstall() {
 
     ## Minecraft
     echo -e "${green}[ INSTALLATION DE MINECRAFT ]${reset}"
-    wget https://launcher.mojang.com/download/Minecraft.tar.gz --quiet --output-document=$HOME/Games/minecraft-launcher.tar.gz
-    tar --directory $HOME/Games/ -zxf $HOME/Games/minecraft-launcher.tar.gz
-    chmod 755 $HOME/Games/minecraft-launcher/minecraft-launcher
-    rm $HOME/Games/minecraft-launcher.tar.gz
-    cp ./files/images/minecraft.png $HOME/.local/share/icons/hicolor/48x48/apps/minecraft.png
-    cp ./files/images/minecraft.svg $HOME/.local/share/icons/hicolor/scalable/apps/minecraft.svg
-    cp ./files/confs/minecraft.desktop $HOME/.local/share/applications/minecraft.desktop
+    wget --quiet --output-document "${HOME}/Games/minecraft-launcher.tar.gz" "https://launcher.mojang.com/download/Minecraft.tar.gz"
+    tar --directory "${HOME}/Games/" -zxf "${HOME}/Games/minecraft-launcher.tar.gz"
+    chmod 755 "${HOME}/Games/minecraft-launcher/minecraft-launcher"
+    rm "${HOME}/Games/minecraft-launcher.tar.gz"
+    cp "./files/home/user/.local/share/icons/hicolor/512x512/apps/minecraft.png" "${HOME}/.local/share/icons/hicolor/512x512/apps/minecraft.png"
+    cp "./files/home/user/.local/share/icons/hicolor/scalable/apps/minecraft.svg" "${HOME}/.local/share/icons/hicolor/scalable/apps/minecraft.svg"
+    cp "./files/home/user/.local/share/applications/minecraft.desktop" "${HOME}/.local/share/applications/minecraft.desktop"
 }
 
 printNextSteps() {
@@ -182,7 +190,7 @@ printNextSteps() {
     echo "      - reboot"
     echo "      - flatpak update --assumeyes"
 
-    if [ $gaming -eq 1 ]; then
+    if [ "${gaming}" -eq 1 ]; then
         echo "    Installer les jeux :"
         echo "      - FTB App                         : https://feed-the-beast.com/app"
         echo "      - Minecraft Dungeons (Bottles)    : https://launcher.mojang.com/download/MinecraftInstaller.msi"
@@ -190,9 +198,9 @@ printNextSteps() {
         echo ""
     fi
 
-    if [ $dev -eq 1 ]; then
+    if [ "${dev}" -eq 1 ]; then
         echo "    Ajouter l'utilisateur au groupe docker :"
-        echo "      - sudo usermod -aG docker,libvirt $USER"
+        echo "      - sudo usermod -aG docker,libvirt ${USER}"
         echo ""
         echo "    Restaurer :"
         echo "      - Clefs SSH"
@@ -207,13 +215,9 @@ printNextSteps() {
         echo "      - git config --global user.email <email>"
         echo "      - git config --global user.name <name>"
         echo "      - git config --global user.signingKey <gpg-key-id>"
-        echo "      - git config --global http.sslCAInfo $HOME/.git-certs/<certificats>"
+        echo "      - git config --global http.sslCAInfo ${HOME}/.git-certs/<certificats>"
         echo ""
     fi
-
-    echo ""
-    echo "    OPTIONNEL :"
-    echo "      - user.js    : https://github.com/arkenfox/user.js/releases/ "
 }
 
 printHelp() {
@@ -231,12 +235,12 @@ printHelp() {
     echo ""
 }
 
-###
-# Start
-###
+#
+# BEGIN
+#
 
 # Requirements verifications
-if ! [ -f $PWD/postinstall-fedora.sh ]; then
+if ! [ -f "${PWD}/postinstall-fedora.sh" ]; then
     echo -e "${red}Vous devez exécuter ce script depuis le dossier contenant ce dernier.${reset}"
     exit 1
 fi
@@ -248,7 +252,7 @@ gaming=0
 misc=0
 
 # Arguments handling
-for opt in $@; do
+for opt in "$@"; do
     case "$opt" in
     "--help")
         printHelp
@@ -282,6 +286,7 @@ done
 # Default installation
 defaultInstall
 
+# Specific installations
 if [ $system -eq 1 ]; then
     systemInstall
 fi
@@ -304,8 +309,7 @@ echo ""
 echo -e "${green}[ POST-INSTALLATION TERMINÉE ]${reset}"
 echo ""
 
-###
+#
 # End
-###
-
+#
 exit 0
