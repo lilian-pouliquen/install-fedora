@@ -1,9 +1,10 @@
 #!/bin/bash
 
-if [[ -z $1 ]]; then
-	vm_number="00"
+if [[ $# -eq 1 ]]; then
+	vm_name="$1"
 else
-	vm_number="$1"
+	exit 1
 fi
 
-remote-viewer --full-screen --title "$label" spice://localhost:59${vm_number}
+virsh --connect qemu:///system start $vm_name
+remote-viewer --full-screen --title "$vm_name" spice://localhost:5900 &
