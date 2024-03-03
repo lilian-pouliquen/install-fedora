@@ -37,10 +37,10 @@ systemInstall() {
 
     ## Keeping only Flathub flatpak remote
     unset flatpak_remotes
-    flatpak_remotes=$(flatpak remote-list --show-disabled)
-    for remote in "${flatpak_remotes[@]}"; do
-        if [ "${remote}" != 'user' ] && [ "${remote}" != 'system' ] && [ "${remote}" != 'flathub' ]; then
-            sudo flatpak remote-delete "$remote"
+    readarray -t flatpak_remotes <<< "$(flatpak remote-list --show-disabled)"
+    for remote_name in "${flatpak_remotes[@]}"; do
+        if [ "${remote_name}" != 'flathub' ]; then
+            sudo flatpak remote-delete "${remote_name}"
         fi
     done
 
@@ -51,7 +51,7 @@ systemInstall() {
 
     ## Creating Docker certificate directory
     echo -e "${green}[ CRÉATION DU RÉPERTOIRE DE CERTIFICATS SSL DOCKER ]${reset}"
-    sudo mkdir --parrents "${HOME}/etc/docker/certs.d/"
+    sudo mkdir --parents "/etc/docker/certs.d/"
 
     ## Installing SSH autocompletion
     sudo cp "./files/confs/ssh_completion" "/etc/bash_completion.d/ssh"
@@ -81,10 +81,10 @@ systemInstall() {
     sudo chown root:root "/usr/local/bin/sync-obsidian"
     sudo chmod 755 "/usr/local/bin/sync-obsidian"
     ### Creating an alias to use vim instead of vi
-    sudo cp "./files/scripts/vim.sh /etc/profile.d/vim.sh"
+    sudo cp "./files/scripts/vim.sh" "/etc/profile.d/vim.sh"
     sudo chown root:root "/etc/profile.d/vim.sh"
     ### Setting vim as the default editor
-    sudo cp "./files/scripts/editor.sh /etc/profile.d/editor.sh"
+    sudo cp "./files/scripts/editor.sh" "/etc/profile.d/editor.sh"
     sudo chown root:root "/etc/profile.d/editor.sh"
 
     ## Using custom commands to install apps
@@ -107,14 +107,14 @@ systemInstall() {
     ## Backgrounds
     echo -e "${green}[ AJOUT DU SET DE FONDS D'ÉCRANS FEDORA ]${reset}"
     ### Creating required directories
-    mkdir --parents \
+    sudo mkdir --parents \
         "/usr/share/backgrounds/custom/f35/"
     ### Installing backgrounds
     sudo cp "./files/usr/share/backgrounds/custom/f35/f35-day.png" "/usr/share/backgrounds/custom/f35/f35-day.png"
     sudo cp "./files/usr/share/backgrounds/custom/f35/f35-night.png" "/usr/share/backgrounds/custom/f35/f35-night.png"
     ### Installing background set configurations
-    sudo cp "./files/usr/share/gnome-backgound-properties/f35.xml" "/usr/share/gnome-backgound-properties/f35.xml"
-    sudo cp "./files/usr/share/backgounds/custom/f35/f35.xml" "/usr/share/backgounds/custom/f35/f35.xml"
+    sudo cp "./files/usr/share/gnome-background-properties/f35.xml" "/usr/share/gnome-background-properties/f35.xml"
+    sudo cp "./files/usr/share/backgrounds/custom/f35/f35.xml" "/usr/share/backgrounds/custom/f35/f35.xml"
 }
 
 miscellaneousInstall() {
@@ -122,19 +122,19 @@ miscellaneousInstall() {
     ### Ledger live
     echo -e "${green}[ INSTALLATION DE LEDGER-LIVE ]${reset}"
     mkdir --parents "${HOME}/applications/ledger/"
-    wget "https://download.live.ledger.com/latest/linux" --quiet --output-document="${HOME}/applications/ledger/ledger-live"
+    wget --quiet --output-document "${HOME}/applications/ledger/ledger-live" "https://download.live.ledger.com/latest/linux"
     chmod 755 "${HOME}/applications/ledger/ledger-live"
-    wget --quiet --output-document=- "https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh" | sudo bash
+    wget --quiet --output-document - "https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh" | sudo bash
 
-    cp "./files/.local/share/icons/hicolor/512x512/ledger_live.png" "${HOME}/.local/share/icons/hicolor/512x512/apps/ledger_live.png"
-    cp "./files/.local/share/icons/hicolor/scalable/ledger_live.svg" "${HOME}/.local/share/icons/hicolor/scalable/apps/ledger_live.svg"
+    cp "./files/.local/share/icons/hicolor/512x512/apps/ledger_live.png" "${HOME}/.local/share/icons/hicolor/512x512/apps/ledger_live.png"
+    cp "./files/.local/share/icons/hicolor/scalable/apps/ledger_live.svg" "${HOME}/.local/share/icons/hicolor/scalable/apps/ledger_live.svg"
     cp "./files/.local/share/applications/ledger_live.desktop" "${HOME}/.local/share/applications/ledger_live.desktop"
 }
 
 devInstall() {
     ## Creating git directories
     echo -e "${green}[ CRÉATION DES RÉPERTOIRES GIT ]${reset}"
-    mkdir --parrents \
+    mkdir --parents \
       "${HOME}/git/" \
       "${HOME}/.git-certs/"
 
@@ -145,9 +145,9 @@ devInstall() {
 
     ## Installing Webstorm
     unset webstorm_folder_name
-    wget "https://download.jetbrains.com/webstorm/WebStorm-2023.3.2.tar.gz" --output-document="/tmp/webstorm.tar.gz"
+    wget --quiet --output-document "/tmp/webstorm.tar.gz" "https://download.jetbrains.com/webstorm/WebStorm-2023.3.2.tar.gz"
     webstorm_folder_name=$(tar --exclude='*/*' --list --file /tmp/webstorm.tar.gz | uniq)
-    tar --directory="${HOME}/applications/" --extract --overwrite --file="/tmp/webstorm.tar.gz"
+    tar --directory "${HOME}/applications/" --extract --overwrite --file="/tmp/webstorm.tar.gz"
     mv "${HOME}/applications/${webstorm_folder_name}" "${HOME}/applications/webstorm/"
 
     ## Adding Webstorm desktop icon
@@ -174,7 +174,7 @@ gamingInstall() {
 
     ## Minecraft
     echo -e "${green}[ INSTALLATION DE MINECRAFT ]${reset}"
-    wget "https://launcher.mojang.com/download/Minecraft.tar.gz" --quiet --output-document="${HOME}/Games/minecraft-launcher.tar.gz"
+    wget --quiet --output-document "${HOME}/Games/minecraft-launcher.tar.gz" "https://launcher.mojang.com/download/Minecraft.tar.gz"
     tar --directory "${HOME}/Games/" -zxf "${HOME}/Games/minecraft-launcher.tar.gz"
     chmod 755 "${HOME}/Games/minecraft-launcher/minecraft-launcher"
     rm "${HOME}/Games/minecraft-launcher.tar.gz"
