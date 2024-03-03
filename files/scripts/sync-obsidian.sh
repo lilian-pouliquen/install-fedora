@@ -21,6 +21,14 @@ printHelp() {
 }
 
 syncStart() {
+    # Checking if process is not already running
+    if [ "$(pgrep --count --full "sync-obsidian start")" -gt 1 ]
+    then
+        echo "[sync-obsidian] La synchronisation est déjà démarrée."
+        return
+    fi
+
+    # Getting config file path
     config_file="${config_dir}/sync-obsidian/directories.conf"
 
     # Check if config file exists and is not empty
