@@ -18,7 +18,7 @@ defaultInstall() {
     ## Configurations
     echo -e "${green}[ CONFIGURATIONS DIVERSES ]${reset}"
     mkdir --parents "${HOME}/bin/"
-    cp "./files/confs/mimeapps.list" "${HOME}/.config/mimeapps.list"
+    cp "./files/home/user/.config/mimeapps.list" "${HOME}/.config/mimeapps.list"
 
     ## Preparing apps dir and app icon dirs
     mkdir --parents \
@@ -54,38 +54,35 @@ systemInstall() {
     sudo mkdir --parents "/etc/docker/certs.d/"
 
     ## Installing SSH autocompletion
-    sudo cp "./files/confs/ssh_completion" "/etc/bash_completion.d/ssh"
+    sudo cp "./files/etc/bash_completion.d/ssh_completion" "/etc/bash_completion.d/ssh"
     sudo chown root:root "/etc/bash_completion.d/ssh"
     sudo chmod 644 "/etc/bash_completion.d/ssh"
 
     ## Installing custom commands
     echo -e "${green}[ INSTALLATION DES COMMANDES PERSONNALISÉES ]${reset}"
     ### BTOP++ update
-    sudo cp "./files/scripts/update-btop.sh" "/usr/local/sbin/update-btop"
+    sudo cp "./files/usr/local/sbin/update-btop.sh" "/usr/local/sbin/update-btop"
     sudo chown root:root "/usr/local/sbin/update-btop"
     sudo chmod 744 "/usr/local/sbin/update-btop"
     ### Docker compose update
-    sudo cp "./files/scripts/update-docker-compose.sh" "/usr/local/sbin/update-docker-compose"
+    sudo cp "./files/usr/local/sbin/update-docker-compose.sh" "/usr/local/sbin/update-docker-compose"
     sudo chown root:root "/usr/local/sbin/update-docker-compose"
     sudo chmod 744 "/usr/local/sbin/update-docker-compose"
     ### Open VM
-    sudo cp "./files/scripts/openvm.sh" "/usr/local/bin/openvm"
+    sudo cp "./files/usr/local/bin/openvm.sh" "/usr/local/bin/openvm"
     sudo chown root:root "/usr/local/bin/openvm"
     sudo chmod 755 "/usr/local/bin/openvm"
     ### Pandock
-    sudo cp "./files/scripts/pandock.sh" "/usr/local/bin/pandock"
+    sudo cp "./files/usr/local/bin/pandock.sh" "/usr/local/bin/pandock"
     sudo chown root:root "/usr/local/bin/pandock"
     sudo chmod 755 "/usr/local/bin/pandock"
     ### Sync Obsidian
-    sudo cp "./files/scripts/sync-obsidian.sh" "/usr/local/bin/sync-obsidian"
+    sudo cp "./files/usr/local/bin/sync-obsidian.sh" "/usr/local/bin/sync-obsidian"
     sudo chown root:root "/usr/local/bin/sync-obsidian"
     sudo chmod 755 "/usr/local/bin/sync-obsidian"
     ### Creating an alias to use vim instead of vi
-    sudo cp "./files/scripts/vim.sh" "/etc/profile.d/vim.sh"
+    sudo cp "./files/etc/profile.d/vim.sh" "/etc/profile.d/vim.sh"
     sudo chown root:root "/etc/profile.d/vim.sh"
-    ### Setting vim as the default editor
-    sudo cp "./files/scripts/editor.sh" "/etc/profile.d/editor.sh"
-    sudo chown root:root "/etc/profile.d/editor.sh"
 
     ## Using custom commands to install apps
     echo -e "${green}[ INSTALLATION AVEC LES COMMANDES PERSONNALISÉES ]${reset}"
@@ -126,9 +123,9 @@ miscellaneousInstall() {
     chmod 755 "${HOME}/applications/ledger/ledger-live"
     wget --quiet --output-document - "https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh" | sudo bash
 
-    cp "./files/.local/share/icons/hicolor/512x512/apps/ledger_live.png" "${HOME}/.local/share/icons/hicolor/512x512/apps/ledger_live.png"
-    cp "./files/.local/share/icons/hicolor/scalable/apps/ledger_live.svg" "${HOME}/.local/share/icons/hicolor/scalable/apps/ledger_live.svg"
-    cp "./files/.local/share/applications/ledger_live.desktop" "${HOME}/.local/share/applications/ledger_live.desktop"
+    cp "./files/home/user/.local/share/icons/hicolor/512x512/apps/ledger_live.png" "${HOME}/.local/share/icons/hicolor/512x512/apps/ledger_live.png"
+    cp "./files/home/user/.local/share/icons/hicolor/scalable/apps/ledger_live.svg" "${HOME}/.local/share/icons/hicolor/scalable/apps/ledger_live.svg"
+    cp "./files/home/user/.local/share/applications/ledger_live.desktop" "${HOME}/.local/share/applications/ledger_live.desktop"
 }
 
 devInstall() {
@@ -146,14 +143,14 @@ devInstall() {
     ## Installing Webstorm
     unset webstorm_folder_name
     wget --quiet --output-document "/tmp/webstorm.tar.gz" "https://download.jetbrains.com/webstorm/WebStorm-2023.3.2.tar.gz"
-    webstorm_folder_name=$(tar --exclude='*/*' --list --file /tmp/webstorm.tar.gz | uniq)
+    webstorm_folder_name=$(tar --exclude='*/*' --list --file "/tmp/webstorm.tar.gz" | uniq)
     tar --directory "${HOME}/applications/" --extract --overwrite --file="/tmp/webstorm.tar.gz"
     mv "${HOME}/applications/${webstorm_folder_name}" "${HOME}/applications/webstorm/"
 
     ## Adding Webstorm desktop icon
     cp "${HOME}/applications/webstorm/bin/webstorm.png" "${HOME}/.local/share/icons/hicolor/128x128/apps/webstorm.png"
     cp "${HOME}/applications/webstorm/bin/webstorm.svg" "${HOME}/.local/share/icons/hicolor/scalable/apps/webstorm.svg"
-    cp "./files/.local/share/applications/webstorm.desktop" "${HOME}/.local/share/applications/webstorm.desktop"
+    cp "./files/home/user/.local/share/applications/webstorm.desktop" "${HOME}/.local/share/applications/webstorm.desktop"
 
     ## Installing NVChad vor NeoVim
     git clone "https://github.com/NvChad/NvChad" "${HOME}/.config/nvim" --depth 1
@@ -178,9 +175,9 @@ gamingInstall() {
     tar --directory "${HOME}/Games/" -zxf "${HOME}/Games/minecraft-launcher.tar.gz"
     chmod 755 "${HOME}/Games/minecraft-launcher/minecraft-launcher"
     rm "${HOME}/Games/minecraft-launcher.tar.gz"
-    cp "./files/.local/share/icons/hicolor/512x512/apps/minecraft.png" "${HOME}/.local/share/icons/hicolor/512x512/apps/minecraft.png"
-    cp "./files/.local/share/icons/hicolor/scalable/apps/minecraft.svg" "${HOME}/.local/share/icons/hicolor/scalable/apps/minecraft.svg"
-    cp "./files/.local/share/applications/minecraft.desktop" "${HOME}/.local/share/applications/minecraft.desktop"
+    cp "./files/home/user/.local/share/icons/hicolor/512x512/apps/minecraft.png" "${HOME}/.local/share/icons/hicolor/512x512/apps/minecraft.png"
+    cp "./files/home/user/.local/share/icons/hicolor/scalable/apps/minecraft.svg" "${HOME}/.local/share/icons/hicolor/scalable/apps/minecraft.svg"
+    cp "./files/home/user/.local/share/applications/minecraft.desktop" "${HOME}/.local/share/applications/minecraft.desktop"
 }
 
 printNextSteps() {
