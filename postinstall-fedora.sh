@@ -132,11 +132,6 @@ devInstall() {
       "${HOME}/git/" \
       "${HOME}/.git-certs/"
 
-    ## Installing Flatpak development apps for user
-    echo -e "${green}[ INSTALLATION DES APPLICATIONS FLATPAK POUR LE DÉVELOPPEMENT ]${reset}"
-    flatpak install --user --assumeyes flathub \
-        com.vscodium.codium
-
     ## Installing Webstorm
     unset webstorm_folder_name
     wget --quiet --output-document "/tmp/webstorm.tar.gz" "https://download.jetbrains.com/webstorm/WebStorm-2023.3.2.tar.gz"
