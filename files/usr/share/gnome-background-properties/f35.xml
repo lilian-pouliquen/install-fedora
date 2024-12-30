@@ -2,7 +2,7 @@
 <!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
 <wallpapers>
   <wallpaper deleted="false">
-    <name>Fedora</name>
+    <name>Fedora 35</name>
     <filename>/usr/share/backgrounds/custom/f35/f35-day.png</filename>
     <filename-dark>/usr/share/backgrounds/custom/f35/f35-night.png</filename-dark>
     <options>zoom</options>
@@ -10,4 +10,9 @@
     <pcolor>#3465a4</pcolor>
     <scolor>#000000</scolor>
   </wallpaper>
+  <wallpaper deleted="false">
+        <name>Fedora 35 Time of Day</name>
+        <filename>/usr/share/backgrounds/custom/f39/f39.xml</filename>
+        <options>zoom</options>
+    </wallpaper>
 </wallpapers>

@@ -102,13 +102,18 @@ systemInstall() {
     echo -e "${green}[ AJOUT DU SET DE FONDS D'ÉCRANS FEDORA ]${reset}"
     ### Creating required directories
     sudo mkdir --parents \
-        "/usr/share/backgrounds/custom/f35/"
+        "/usr/share/backgrounds/custom/f35/" \
+        "/usr/share/backgrounds/custom/f39/"
     ### Installing backgrounds
     sudo cp "./files/usr/share/backgrounds/custom/f35/f35-day.png" "/usr/share/backgrounds/custom/f35/f35-day.png"
     sudo cp "./files/usr/share/backgrounds/custom/f35/f35-night.png" "/usr/share/backgrounds/custom/f35/f35-night.png"
+    sudo cp "./files/usr/share/backgrounds/custom/f39/f39-day.png" "/usr/share/backgrounds/custom/f39/f39-day.png"
+    sudo cp "./files/usr/share/backgrounds/custom/f39/f39-night.png" "/usr/share/backgrounds/custom/f39/f39-night.png"
     ### Installing background set configurations
     sudo cp "./files/usr/share/gnome-background-properties/f35.xml" "/usr/share/gnome-background-properties/f35.xml"
     sudo cp "./files/usr/share/backgrounds/custom/f35/f35.xml" "/usr/share/backgrounds/custom/f35/f35.xml"
+    sudo cp "./files/usr/share/gnome-background-properties/f39.xml" "/usr/share/gnome-background-properties/f39.xml"
+    sudo cp "./files/usr/share/backgrounds/custom/f39/f39.xml" "/usr/share/backgrounds/custom/f39/f39.xml"
 }
 
 miscellaneousInstall() {
@@ -146,7 +151,6 @@ devInstall() {
 
     ## Installing NVChad vor NeoVim
     git clone "https://github.com/NvChad/starter" "${HOME}/.config/nvim"
-
 }
 
 gamingInstall() {
@@ -158,8 +162,7 @@ gamingInstall() {
     flatpak install --user --assumeyes flathub \
         com.heroicgameslauncher.hgl \
         com.usebottles.bottles \
-        com.valvesoftware.Steam \
-        io.github.hmlendea.geforcenow-electron
+        com.valvesoftware.Steam
 
     ## Minecraft
     echo -e "${green}[ INSTALLATION DE MINECRAFT ]${reset}"
