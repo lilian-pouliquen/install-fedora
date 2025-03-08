@@ -139,7 +139,7 @@ devInstall() {
 
     ## Installing Webstorm
     unset webstorm_folder_name
-    wget --quiet --output-document "/tmp/webstorm.tar.gz" "https://download.jetbrains.com/webstorm/WebStorm-2023.3.2.tar.gz"
+    wget --quiet --output-document "/tmp/webstorm.tar.gz" "https://download.jetbrains.com/webstorm/WebStorm-2025.1.3.tar.gz"
     webstorm_folder_name=$(tar --exclude='*/*' --list --file "/tmp/webstorm.tar.gz" | uniq)
     tar --directory "${HOME}/applications/" --extract --overwrite --file="/tmp/webstorm.tar.gz"
     mv "${HOME}/applications/${webstorm_folder_name}" "${HOME}/applications/webstorm/"
@@ -162,7 +162,8 @@ gamingInstall() {
     flatpak install --user --assumeyes flathub \
         com.heroicgameslauncher.hgl \
         com.usebottles.bottles \
-        com.valvesoftware.Steam
+        com.valvesoftware.Steam \
+        net.pcsx2.PCSX2
 
     ## Minecraft
     echo -e "${green}[ INSTALLATION DE MINECRAFT ]${reset}"
@@ -192,7 +193,7 @@ printNextSteps() {
         echo "    Installer les jeux :"
         echo "      - FTB App                         : https://feed-the-beast.com/app"
         echo "      - Minecraft Dungeons (Bottles)    : https://launcher.mojang.com/download/MinecraftInstaller.msi"
-        echo "      - Genshin Impact (Bottles)        : https://ys-api-os.mihoyo.com/event/download_porter/link/ys_global/genshinimpactpc/default"
+        echo "      - Genshin Impact (Bottles)        : https://sg-public-api.hoyoverse.com/event/download_porter/trace/hyp_global/hyphoyoverse/default"
         echo ""
     fi
 
