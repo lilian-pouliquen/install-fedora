@@ -40,7 +40,12 @@ install-fedora/
 +-- README.md                => Project introduction
 ```
 
-## 4. Files to create
+## 4. Useful command lines
+* Check current disk partitions : ```lsblk -o NAME,TYPE,SIZE,MOUNTPOINT,FSTYPE,LABEL,MODEL```
+* Encrypt password : ```openssl passwd -6 <desired password>```
+
+
+## 5. Files to create
 
 The project is not working as is. In order to use it, you must copy, fill and adapt the following files:
 
